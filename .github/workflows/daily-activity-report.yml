@@ -1,0 +1,80 @@
+name: Daily Repository Activity Report
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+  actions: read
+
+concurrency:
+  group: daily-repository-activity-report
+  cancel-in-progress: false
+
+jobs:
+  create-daily-issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate daily activity report
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/daily_activity_report.py \
+            --repo "${{ github.repository }}" \
+            --output daily-activity-report.md
+
+      - name: Create or update daily report issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const report = fs.readFileSync('daily-activity-report.md', 'utf8');
+            const reportDate = new Date().toISOString().slice(0, 10);
+            const title = `Daily repository activity report - ${reportDate}`;
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'all',
+              creator: 'github-actions[bot]',
+              per_page: 100,
+            });
+
+            const existing = issues.find((issue) => issue.title === title);
+
+            if (existing) {
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: existing.number,
+                title,
+                body: report,
+                state: 'open',
+              });
+              core.summary.addHeading('Daily activity issue').addRaw(`Updated issue #${existing.number}: ${title}`).write();
+            } else {
+              const { data: created } = await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body: report,
+              });
+              core.summary.addHeading('Daily activity issue').addRaw(`Created issue #${created.number}: ${title}`).write();
+            }
+
+
