@@ -182,14 +182,15 @@ def getData(path):
     return bias, interval, data
         
         
-#bias, interval, data = getData("data1.txt")
-#bayes1 = Bayes(data, interval, bias)
-#bayes1.program()
+if __name__ == "__main__":
+    #bias, interval, data = getData("data1.txt")
+    #bayes1 = Bayes(data, interval, bias)
+    #bayes1.program()
 
-bias, interval, data = getData("data2.txt")
-bayes2 = Bayes(data, interval, bias)
-bayes2.program()
+    bias, interval, data = getData("data2.txt")
+    bayes2 = Bayes(data, interval, bias)
+    bayes2.program()
 
-#bias, interval, data = getData("data3.txt")
-#bayes3 = Bayes(data, interval, bias)
-#bayes3.program()
+    #bias, interval, data = getData("data3.txt")
+    #bayes3 = Bayes(data, interval, bias)
+    #bayes3.program()

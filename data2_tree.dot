@@ -1,0 +1,27 @@
+digraph tree {
+    "Data";
+    "Bayes 0.58";
+    "CTR 0.74";
+    "Chance 2.8462";
+    "Sufficiency 1.2198";
+    "Glob 1.741";
+    "Probability 0.6352";
+    "Bayes 0.88";
+    "CTR 0.588";
+    "Chance 1.4272";
+    "Sufficiency 0.6117";
+    "Glob 1.741";
+    "Probability 0.6352";
+    "Data" -> "Bayes 0.58";
+    "Data" -> "Bayes 0.88";
+    "Bayes 0.58" -> "CTR 0.74";
+    "CTR 0.74" -> "Chance 2.8462";
+    "Chance 2.8462" -> "Sufficiency 1.2198";
+    "Sufficiency 1.2198" -> "Glob 1.741";
+    "Glob 1.741" -> "Probability 0.6352";
+    "Bayes 0.88" -> "CTR 0.588";
+    "CTR 0.588" -> "Chance 1.4272";
+    "Chance 1.4272" -> "Sufficiency 0.6117";
+    "Sufficiency 0.6117" -> "Glob 1.741";
+    "Glob 1.741" -> "Probability 0.6352";
+}
